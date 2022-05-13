@@ -45,7 +45,7 @@ app.get("/getTareas", function (request, response) {
   }
 });
 
-// Get/Id
+// Get/Id - Pending
 
 //Post API
 app.post("/updateTareas", function (request, response) {
@@ -84,6 +84,7 @@ app.post("/updateTareas", function (request, response) {
   }
 });
 
+// PUT API
 app.put("/createTareas", function (request, response) {
   try {
 
@@ -117,7 +118,10 @@ app.put("/createTareas", function (request, response) {
   }
 });
 
+// Delete API - Pending
 
+
+//Serve Server
 var server = app.listen(5000, function () {
   console.log('Node server is running..');
 });
