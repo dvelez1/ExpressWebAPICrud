@@ -27,7 +27,7 @@ app.get("/getTareas", function (request, response) {
   try {
     pool.connect().then(() => {
       //simple query
-      queryString = 'select TOP(2) Id,Nombre,Estado  from dbo.Tareas';
+      queryString = 'select TOP(10) Id,Nombre,Estado  from dbo.Tareas';
       pool.request().query(queryString, (err, result) => {
         if (err){
           console.log(err)
@@ -84,6 +84,38 @@ app.post("/updateTareas", function (request, response) {
   }
 });
 
+app.put("/createTareas", function (request, response) {
+  try {
+
+    tarea.Id = 0;
+    tarea.Estado = request.body.Estado;
+    tarea.Nombre = request.body.Nombre;
+    
+    pool.connect().then(() => {
+      //simple query
+      queryString = 'Insert Into dbo.Tareas(Nombre, Estado) ' + 
+      'VALUES(@Nombre, @Estado)';
+
+      pool.request()
+      .input("Nombre", sql.VarChar, tarea.Nombre)
+      .input("Estado", sql.Bit, tarea.Estado)
+      .query(queryString, (err, result) => {
+        if (err){
+          console.log(err)
+          response.sendStatus(400)
+        }
+        else {
+          response.sendStatus(200)
+        }
+      })
+   
+    })
+
+  } catch (err) {
+    response.status(500)
+    response.send(err.message)
+  }
+});
 
 
 var server = app.listen(5000, function () {
