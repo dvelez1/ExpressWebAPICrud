@@ -2,11 +2,11 @@ const sql = require('mssql/msnodesqlv8')
 var express = require('express');
 var app = express();
 app.use(express.json());
-var bodyParser = require('express');
 var queryString = "";
 
-const { response } = require('express');
-const router = express.Router()
+// var bodyParser = require('express');
+// const { response } = require('express');
+// const router = express.Router()
 //msnodesqlv8 module is requiered for Windows Authentication without using Username and Password
 
 // ConnectionString
@@ -142,7 +142,34 @@ app.put("/createTareas", function (request, response) {
   }
 });
 
-// Delete API - Pending
+// Delete API 
+app.delete("/deleteTareasById/:Id", function (request, response) {
+  try {
+    pool.connect().then(() => {
+      //simple 
+      const id = parseInt(request.params.Id);
+
+      queryString = 'Delete from dbo.Tareas where Id=@Id';
+      pool.request()
+      .input("Id", sql.Int, id)
+      .query(queryString, (err, result) => {
+        if (err){
+          console.log(err)
+          response.sendStatus(500)
+        }
+        else {
+          //response.send(result.recordset);
+          response.status(200).json({
+            message: "Successfully deleted user"
+            });
+        }
+      })
+    })
+  } catch (err) {
+    response.status(500)
+    response.send(err.message)
+  }
+});
 
 
 //Serve Server
