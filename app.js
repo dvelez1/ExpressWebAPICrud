@@ -45,7 +45,31 @@ app.get("/getTareas", function (request, response) {
   }
 });
 
-// Get/Id - Pending
+// Get/Id
+app.get("/getTareasById/:Id", function (request, response) {
+  try {
+    pool.connect().then(() => {
+      //simple 
+      const id = parseInt(request.params.Id);
+
+      queryString = 'select TOP(10) Id,Nombre,Estado  from dbo.Tareas where Id=@Id';
+      pool.request()
+      .input("Id", sql.Int, id)
+      .query(queryString, (err, result) => {
+        if (err){
+          console.log(err)
+          response.sendStatus(400)
+        }
+        else {
+          response.send(result.recordset);
+        }
+      })
+    })
+  } catch (err) {
+    response.status(500)
+    response.send(err.message)
+  }
+});
 
 //Post API
 app.post("/updateTareas", function (request, response) {
